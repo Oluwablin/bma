@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\UserInvitation;
 use App\User;
 
 class RegistrationController extends Controller
@@ -38,7 +40,7 @@ class RegistrationController extends Controller
 		    if($user->save()){
                 $data = [
                     "status"            => "success",
-                    "message"           => 'User account has been created successfully.',
+                    "message"           => $user->FullName . ' has been created successfully. Ask them to check their mail.',
                 ];
             }else{
                 $data = [
@@ -47,6 +49,7 @@ class RegistrationController extends Controller
                 ];
             }
             DB::commit();
+            Notification::send($user, new UserInvitation());
             return response()->json($data, 201);
         } catch (Exception $e) {
             DB::rollback();
