@@ -38,11 +38,11 @@ Route::middleware('jwt.auth')->group(function () {
     Route::put('update/a/question/{ref}',                               'QuestionController@updateQuestion');
     Route::delete('delete/a/question/{ref}',                            'QuestionController@destroyQuestion');
     Route::post('create/new/question',                                  'QuestionController@createQuestion');
-
+    Route::post('import/new/question',                                  'QuestionController@import');
 
     //CHOICES
     Route::post('create/new/choice',                                    'ChoiceController@createChoice');
     Route::put('update/a/choice/{ref}',                                 'ChoiceController@updateChoice');
-    Route::delete('delete/a/choice',                                    'ChoiceController@destroyChoice');
+    Route::delete('delete/a/choice/{ref}',                              'ChoiceController@destroyChoice');
 
 });

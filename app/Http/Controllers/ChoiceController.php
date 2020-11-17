@@ -33,7 +33,7 @@ class ChoiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createChoice(Request $request)
     {
         //
     }
@@ -67,7 +67,7 @@ class ChoiceController extends Controller
      * @param  \App\Choice  $choice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Choice $choice)
+    public function updateChoice(Request $request, $ref)
     {
         //
     }
@@ -78,7 +78,7 @@ class ChoiceController extends Controller
      * @param  \App\Choice  $choice
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Choice $choice)
+    public function destroyChoice(Request $request, $ref)
     {
         //
     }

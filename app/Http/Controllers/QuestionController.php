@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Question;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\QuestionsImport;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -18,11 +20,11 @@ class QuestionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * List all Questions.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function listAllQuestions()
     {
         //
     }
@@ -33,7 +35,7 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createQuestion(Request $request)
     {
         //
     }
@@ -44,18 +46,18 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function show(Question $question)
+    public function showQuestion(Request $request, $ref)
     {
         //
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * fetch Question By Category.
      *
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function edit(Question $question)
+    public function fetchQuestionByCategory(Request $request)
     {
         //
     }
@@ -67,7 +69,7 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Question $question)
+    public function updateQuestion(Request $request, $re)
     {
         //
     }
@@ -78,8 +80,19 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Question $question)
+    public function destroyQuestion(Request $request, $ref)
     {
         //
+    }
+
+    /**
+     * Imort new question through excel.
+     *
+     * @param  \App\Question  $question
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        Excel::import(new QuestionsImport, 'question_excel.xlsx');
     }
 }

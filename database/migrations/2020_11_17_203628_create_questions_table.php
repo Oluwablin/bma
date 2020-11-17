@@ -20,7 +20,7 @@ class CreateQuestionsTable extends Migration
             $table->string('categories')->nullable();
             $table->integer('point')->nullable();
             $table->string('icon_url')->nullable();
-            $table->inteer('duration')->nullable();
+            $table->integer('duration')->nullable();
             $table->string('choice_1')->nullable();
             $table->boolean('is_correct_choice_1');
             $table->string('icon_url_1')->nullable();
