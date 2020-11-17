@@ -31,4 +31,18 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('get/authenticated/user', 							    'AuthenticationController@userCurrentlyLoggedIn');
     Route::post('user/logout', 										    'AuthenticationController@logoutUser');
 
+    //QUESTIONS
+    Route::get('fetch/list/of/all/questions',                           'QuestionController@listAllQuestions');
+    Route::get('fetch/a/question/{ref}',                                'QuestionController@showQuestion');
+    Route::get('fetch/questions/by/category',                           'QuestionController@fetchQuestionByCategory');
+    Route::put('update/a/question/{ref}',                               'QuestionController@updateQuestion');
+    Route::delete('delete/a/question/{ref}',                            'QuestionController@destroyQuestion');
+    Route::post('create/new/question',                                  'QuestionController@createQuestion');
+
+
+    //CHOICES
+    Route::post('create/new/choice',                                    'ChoiceController@createChoice');
+    Route::put('update/a/choice/{ref}',                                 'ChoiceController@updateChoice');
+    Route::delete('delete/a/choice',                                    'ChoiceController@destroyChoice');
+
 });
