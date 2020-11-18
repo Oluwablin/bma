@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Choice;
 use Validator;
 use Exception;
+use DB;
 use Illuminate\Http\Request;
 
 class ChoiceController extends Controller
@@ -107,7 +108,7 @@ class ChoiceController extends Controller
             
 	        return response()->json($data, 400);
         }
-        
+
         $choice                           = Choice::find($ref);
         try {
             DB::beginTransaction();

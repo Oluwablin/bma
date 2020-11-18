@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\QuestionsImport;
 use Validator;
 use Exception;
+use DB;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -43,7 +44,11 @@ class QuestionController extends Controller
     {
         $validator                      = Validator::make($request->all(), [
             'question'                  => 'required|string',
-            'is_general'                => 'required'
+            'is_general'                => 'required',
+            'is_correct_choice_1'       => 'required',
+            'is_correct_choice_2'       => 'required',
+            'is_correct_choice_3'       => 'required',
+            'is_correct_choice_4'       => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -104,7 +109,11 @@ class QuestionController extends Controller
     {
         $validator                      = Validator::make($request->all(), [
             'question'                  => 'required|string',
-            'is_general'                => 'required'
+            'is_general'                => 'required',
+            'is_correct_choice_1'       => 'required',
+            'is_correct_choice_2'       => 'required',
+            'is_correct_choice_3'       => 'required',
+            'is_correct_choice_4'       => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -168,6 +177,31 @@ class QuestionController extends Controller
      */
     public function import(Request $request)
     {
-        Excel::import(new QuestionsImport, 'question_excel.xlsx');
+        if ($request->hasFile('excel_file')) {
+            $file                       = $request->file('excel_file')->getClientOriginalName();
+            $filename                   = $request->excel_file->storeAs('public/excel_file', $file);
+        }
+        $validator = Validator::make($request->all(), [
+            'excel_file' => 'required'
+        ]);
+
+        // $validator->after(function($validator) use ($file) {
+        //     if ($file !=='xlsx') {
+        //         $validator->errors()->add('field', 'File type is invalid - only xlsx is allowed');
+        //     }
+        // });
+
+        if ($validator->fails()) {
+            $data = [
+	        	"status"                => "error",
+	        	"message"               => $validator->errors(),
+            ];
+            
+	        return response()->json($data, 400);
+        }
+
+        Excel::import(new QuestionsImport, $file);
+
+        return response()->json(['status' => 'success', 'message' => 'Excel file uploaded successfully'], 200);
     }
 }
