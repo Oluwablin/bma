@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Question;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\QuestionsImport;
+use Validator;
+use Exception;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -26,7 +28,9 @@ class QuestionController extends Controller
      */
     public function listAllQuestions()
     {
-        //
+        $questions                      = Question::paginate(10);
+
+        return response()->json($questions, 200);
     }
 
     /**
@@ -37,7 +41,30 @@ class QuestionController extends Controller
      */
     public function createQuestion(Request $request)
     {
-        //
+        $validator                      = Validator::make($request->all(), [
+            'question'                  => 'required|string',
+            'is_general'                => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+	        	"status"                => "error",
+	        	"message"               => $validator->errors(),
+            ];
+            
+	        return response()->json($data, 400);
+        }
+
+        try {
+            DB::beginTransaction();
+            $question                     = new Question($request->all());
+            $question->save();
+            DB::commit();
+            return response()->json(['status' => 'success', 'data' => $question, 'message' => 'Question saved Successfully'], 201);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(). ',' . ' Question could not be saved, Please ensure data is inputted correctly.'], 400);
+        }
     }
 
     /**
@@ -48,7 +75,9 @@ class QuestionController extends Controller
      */
     public function showQuestion(Request $request, $ref)
     {
-        //
+        $questions                      = Question::findorFail($ref);
+
+        return response()->json($questions, 200);
     }
 
     /**
@@ -59,7 +88,9 @@ class QuestionController extends Controller
      */
     public function fetchQuestionByCategory(Request $request)
     {
-        //
+        $questions                      = Question::where('categories', $request->categories)->get();
+
+        return response()->json($questions, 200);
     }
 
     /**
@@ -69,9 +100,33 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function updateQuestion(Request $request, $re)
+    public function updateQuestion(Request $request, $ref)
     {
-        //
+        $validator                      = Validator::make($request->all(), [
+            'question'                  => 'required|string',
+            'is_general'                => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+	        	"status"                => "error",
+	        	"message"               => $validator->errors(),
+            ];
+            
+	        return response()->json($data, 400);
+        }
+
+        $question                       = Question::find($ref);
+        try {
+            DB::beginTransaction();
+            $question->question         = $request->question;
+            $question->update($request->all());
+            DB::commit();
+            return response()->json(['status' => 'success', 'data' => $question, 'message' => 'Question Updated Successfully'], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(). ',' . ' Question could not be updated, Please ensure data is inputted correctly.'], 400);
+        }
     }
 
     /**
@@ -82,7 +137,27 @@ class QuestionController extends Controller
      */
     public function destroyQuestion(Request $request, $ref)
     {
-        //
+        $question                       = Question::find($ref);
+        if($question !== null){
+            if($question->delete()){
+                $data = [
+                    "status"            => "success",
+                    "message"           => "Question was deleted successfully"
+                ];
+            }else{
+                $data = [
+                    "status"            => "error",
+                    "message"           => "Error deleting Question!"
+                ];
+            }
+        }else{
+            $data = [
+                "status"                => "error",
+                "message"               => "No Question found!"
+            ];
+        }
+
+        return response()->json($data, 200);
     }
 
     /**
